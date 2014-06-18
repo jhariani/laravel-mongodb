@@ -257,6 +257,16 @@ abstract class Model extends \Jenssegers\Eloquent\Model {
             $value = $builder->convertKey($value);
         }
 
+        // If any values in the array are listed as a date,
+        // we'll convert them to DateTime
+        if (is_array($value))
+        {
+            $value = $this->arrayDates($value, $key, function($attribute) {
+                return $this->fromDateTime($attribute);
+            });
+        }
+        
+
         parent::setAttribute($key, $value);
     }
 
@@ -412,27 +422,6 @@ abstract class Model extends \Jenssegers\Eloquent\Model {
         }
 
         return $value;
-    }
-
-    /**
-     * Set a given attribute on the model.
-     *
-     * @param  string  $key
-     * @param  mixed   $value
-     * @return void
-     */
-    public function setAttribute($key, $value)
-    {
-        // If any values in the array are listed as a date,
-        // we'll convert them to DateTime
-        if (is_array($value))
-        {
-            $value = $this->arrayDates($value, $key, function($attribute) {
-                return $this->fromDateTime($attribute);
-            });
-        }
-
-        parent::setAttribute($key, $value);
     }
 
     /**
